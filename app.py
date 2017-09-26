@@ -79,13 +79,11 @@ def is_logged_in(f):
 @is_logged_in
 def logout():
 	session.clear()
-	flash('You are now logged out','success')
 	return redirect(url_for('login'))
 
 @is_logged_in
 @app.route('/dashboard') 
 def dashboard():
-	
 	#get Recipes
 	if all_recipes:
 		return render_template('dashboard.html',all_recipes=all_recipes)
