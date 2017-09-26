@@ -139,6 +139,5 @@ def delete_recipe(id):
 
 if __name__=='__main__':
     app.config['SECRET_KEY'] = 'redsfsfsfsfis'
-    sess.init_app(app)
     app.run(debug=True)
     app.run()
