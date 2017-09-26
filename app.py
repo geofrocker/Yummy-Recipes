@@ -41,7 +41,7 @@ def register():
         passwords.append(password)
         #redirect to home page
         error='Your are now registered and can log in'
-        return redirect(url_for('recipes'),error=error)
+        return render_template('recipes.html',error=error)
     return render_template('register.html',form=form)
 
 #user login
@@ -57,7 +57,7 @@ def login():
             session['logged_in']=True
             session['username']=username
             error='Your are now logged in'
-            return redirect(url_for('dashboard'),error=error)
+            return render_template('dashboard.html',error=error)
 
         else:
             error='User not found'
