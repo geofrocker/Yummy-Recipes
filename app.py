@@ -41,7 +41,7 @@ def register():
         passwords.append(password)
         #redirect to home page
         error='Your are now registered and can log in'
-        return render_template('recipes.html',error=error)
+        return render_template('register.html',error=error)
     return render_template('register.html',form=form)
 
 #user login
