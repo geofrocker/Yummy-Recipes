@@ -1,0 +1,221 @@
+
+#menu-share{
+      background-color: #07abec;
+  display: inline-block;
+  position: fixed;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  /*position: relative;*/
+  -webkit-user-drag: none;
+  color: #fff;
+  height: 56px;
+width: 56px;
+z-index: 20;
+right: 22px;
+text-align: center;
+bottom: 22px;
+padding-top: 3px;
+}
+
+#float-submenu {
+  position: fixed;
+  right: 22px;
+  padding-bottom: 20px;
+  bottom: 60px;
+  z-index: 100;
+}
+
+#float-submenu li{
+	list-style:none;
+	margin-bottom:10px;
+}
+
+#float-submenu li a{
+  display: inline-block;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  -webkit-user-drag: none;
+  height: 56px;
+  width: 56px;
+}
+
+#float-submenu:hover{
+	visibility:visible!important;
+	opacity:1!important;
+}
+
+
+.my-float{
+	font-size:24px;
+	margin-top:18px;
+}
+
+a#menu-share + ul{
+  visibility: hidden;
+}
+
+a#menu-share:hover + ul {
+  visibility: visible;
+  animation: scale-in 0.5s;
+}
+
+a#menu-share i{
+	animation: rotate-in 0.5s;
+}
+a#menu-share i:focus {
+  text-decoration: none;
+}
+a#menu-share:hover > i{
+	animation: rotate-out 0.5s;
+}
+
+@keyframes bot-to-top {
+    0%   {bottom:-40px}
+    50%  {bottom:40px}
+}
+
+@keyframes scale-in {
+    from {transform: scale(0);opacity: 0;}
+    to {transform: scale(1);opacity: 1;}
+}
+
+@keyframes rotate-in {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+@keyframes rotate-out {
+    from {transform: rotate(360deg);}
+    to {transform: rotate(0deg);}
+}
+#float-submenu .green {
+    background-color: #088142;
+}
+#float-submenu .red {
+    background-color: #ff5252;
+}
+#float-submenu .blue {
+    background-color: #106cc8;
+}
+
+#float-submenu i, #menu-share i {
+   line-height: 54px;
+   text-align: center;
+   font-size: 30px;
+}
+
+
+[data-button-label]:after {
+  content: attr(data-button-label);
+      opacity: 0;
+      background: rgba(0,0,0,.4);
+      padding: 4px 10px;
+      border-radius: 3px;
+      color: hsla(0,0%,100%,.8);
+      font-size: 14px;
+      font-weight: 400;
+      pointer-events: none;
+      line-height: normal;
+      position: absolute;
+      top: 50%;
+      text-align: center;
+      right: 68px;
+      margin-top: -11px;
+      box-sizing: inherit;
+      padding: 6px 9px;
+      width: 94px;
+}
+#float-submenu li:last-child [data-button-label]:after {
+  width: 132px;
+}
+[data-button-label]:hover:after {
+  opacity: 1;
+}
+/* icons css */
+@font-face {
+  font-family: 'icomoon';
+  src:  url('../fonts/icomoon.eot?dtiaxu');
+  src:  url('../fonts/icomoon.eot?dtiaxu#iefix') format('embedded-opentype'),
+    url('../fonts/icomoon.ttf?dtiaxu') format('truetype'),
+    url('../fonts/icomoon.woff?dtiaxu') format('woff'),
+    url('../fonts/icomoon.svg?dtiaxu#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-email:before {
+  content: "\e902";
+}
+.icon-chat:before {
+  content: "\e906";
+}
+.icon-idea:before {
+  content: "\e900";
+}
+.icon-qa:before {
+  content: "\e908";
+}
+.icon-smile:before {
+  content: "\e901";
+}
+
+
+/*.kc_fab_wrapper i {
+    line-height: 54px;
+    font-size: 30px;
+}
+
+
+
+.sub_fab_btns_wrapper.show:hover {
+    opacity: 1;
+}
+.kc_fab_main_btn i {
+  line-height: 62px;
+}
+.sub_fab_btn:hover:after{
+  content: attr(data-title);
+      background: rgba(0,0,0,.4);
+      padding: 7px 3px;
+      border-radius: 3px;
+      color: hsla(0,0%,100%,.8);
+      font-size: 14px;
+      font-weight: 400;
+      pointer-events: none;
+      line-height: normal;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 92px;
+      min-width: 110px;
+      transition: all .5s;
+}
+.sub_fab_btns_wrapper div {
+  position: relative;
+}*/

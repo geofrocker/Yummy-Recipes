@@ -1,0 +1,34 @@
+{% extends 'layouts.html' %}
+{% block body %}
+
+<h3> Welcome!!! {{ session.username }} !!!</h3>
+<a href="/add_recipe" class="btn btn-success pull-right"> Add Recipe</a></br>
+<hr>
+<table class="table table-striped">
+	<tr>
+		<th>ID</th>
+		<th>Title</th>
+		<th>Author</th>
+		<th>Date</th>
+		<th></th>
+		<th></th>
+	</tr>
+	{% for recipe in all_recipes %}
+	<tr>
+		<td>{{ recipe.id }}</td>
+		<td>{{ recipe.title }}</td>
+		<td>{{ recipe.author }}</td>
+		<td>{{ recipe.create_date }}</td>
+		<td><a href="/edit_recipe/{{recipe.id}}" class="btn btn-default pull-right"> Edit</a></td>
+		<td>
+			<form action="{{ url_for('delete_recipe',id=recipe.id) }}" method="POST">
+				<input type="hidden" name="_method" value="DELETE">
+				<input type="submit" value="Delete" class="btn btn-danger">
+			</form>
+		</td>
+		
+	</tr>
+	{%endfor%}
+</table>
+
+{% endblock %}

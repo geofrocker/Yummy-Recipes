@@ -1,0 +1,20 @@
+{%extends 'layouts.html'%}
+
+{%block body%}
+<h1>Login</h1>
+<form method="POST" action="">
+	<div class="form-group">
+		<label>Username</label>
+		<input type="text" name="username" class="form-control" value="{{ request.form.username}}">
+	</div>
+	<div class="form-group">
+		<label>Password</label>
+		<input type="password" name="password" class="form-control" value="{{ request.form.password}}">
+	</div>
+	<p><input type="Submit" class="btn btn-primary" value="Login"></p>
+</form>
+<center>
+	<p>or</p>
+	<p><a href="/register">Click here to register</a></p>
+</center>
+{%endblock%}

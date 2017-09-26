@@ -1,0 +1,20 @@
+{%extends 'layouts.html'%}
+
+{%block body%}
+<h1>Recipes</h1>
+{% for recipe in all_recipes%}
+<div class="jumbotron">
+<h3>{{recipe.title}}</h3>
+<em>Added by <span class="fa fa-user"></span> {{recipe.created_by}} on <span class="fa fa-calendar"></span>{{recipe.create_date}}</em>
+
+<hr>
+<div>
+    <h3>Ingredients</h3>
+    {{recipe.ingredients}}
+    <h3>Steps</h3>
+    {{recipe.steps | safe}}
+</div>
+</div>
+{%endfor%}
+
+{%endblock%}
