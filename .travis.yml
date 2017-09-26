@@ -12,6 +12,8 @@ install:
   - pip install -r requirements.txt
   - pip install python-coveralls
   - pip install coverage
-
+# command to run tests
+script:
+    - coverage run app.py test
 after_success:
     - coveralls
