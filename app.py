@@ -1,143 +1,149 @@
-from flask import Flask,render_template,flash,redirect,url_for,session,request
-from wtforms import Form,StringField,TextAreaField,PasswordField,validators
+"""Yummy recipes app for creating,retrieving,updating and deleting recipes"""
+from flask import Flask, render_template, flash, redirect, url_for, session, request
+from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from functools import wraps
 from recipes import recipes
-app=Flask(__name__)
+app = Flask(__name__)
 usernames = []
 emails = []
 passwords = []
-all_recipes=recipes()
+all_recipes = recipes()
 #All Recipes
 @app.route('/')
 def recipes():
+    """Display all recipes"""
     if all_recipes:
-	    return render_template('recipes.html',all_recipes=all_recipes)
+        return render_template('recipes.html', all_recipes=all_recipes)
     else:
-        msg='No Recipes Found'
-        return render_template('recipes.html',msg=msg)
+        msg = 'No Recipes Found'
+        return render_template('recipes.html', msg=msg)
 
 #Register form class
 class RegisterForm(Form):
-    name = StringField(u'Name', validators=[validators.Length(min=1,max=50)])
-    username = StringField(u'Username', validators=[validators.Length(min=1,max=50)])
-    email  = StringField(u'Email', validators=[validators.Length(min=1,max=50)])
-    password = PasswordField('Password',[
-    	validators.DataRequired(),
-    	validators.EqualTo('confirm',message='Passwords do not match')
-    	])
+    """Register form for new users"""
+    name = StringField(u'Name', validators=[validators.Length(min=1, max=50)])
+    username = StringField(u'Username', validators=[validators.Length(min=1, max=50)])
+    email = StringField(u'Email', validators=[validators.Length(min=1, max=50)])
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords do not match')
+        ])
     confirm = PasswordField('Confirm Password')
 
 #user register
-@app.route('/register', methods=['GET','POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
+    """Register function for a new user"""
     form = RegisterForm(request.form)
-    if request.method=='POST' and form.validate():
-        name=form.name.data 
-        email=form.email.data 
-        username=form.username.data 
-        password=form.password.data
+    if request.method == 'POST' and form.validate():
+        name = form.name.data
+        email = form.email.data
+        username = form.username.data
+        password = form.password.data
         usernames.append(username)
         emails.append(email)
         passwords.append(password)
         #redirect to home page
         redirect(url_for('recipes'))
-    return render_template('register.html',form=form)
+    return render_template('register.html', form=form)
 
 #user login
-@app.route('/login', methods =['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Login function for a member"""
     if request.method == 'POST':
         #get form fields
-        username=request.form['username']
-        password_candidate=request.form['password']
+        username = request.form['username']
+        password_candidate = request.form['password']
 
         if username in usernames and password_candidate in passwords:
             #passed
-            session['logged_in']=True
-            session['username']=username
+            session['logged_in'] = True
+            session['username'] = username
             return redirect(url_for('dashboard'))
 
         else:
-            error='User not found'
-            return render_template('login.html',error=error)
+            error = 'User not found'
+            return render_template('login.html', error=error)
     return render_template('login.html')
 
 #Check if user is logged
 def is_logged_in(f):
-	@wraps(f)
-	def wrap(*args,**kwargs):
-		if 'logged_in' in session:
-			return f(*args, **kwargs)
-		else:
-			flash('Unauthorised, Please login', 'danger')
-			return redirect(url_for('login'))
-	return wrap
-		
+    """implement decorator for checking if a user is logged in"""
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorised, Please login', 'danger')
+            return redirect(url_for('login'))
+    return wrap
 
 #logout
 @app.route('/logout')
 @is_logged_in
 def logout():
-	session.clear()
-	return redirect(url_for('login'))
+    """log out function for the user"""
+    session.clear()
+    return redirect(url_for('login'))
 
 @is_logged_in
-@app.route('/dashboard') 
+@app.route('/dashboard')
 def dashboard():
+    """implement the user dashboard"""
 	#get Recipes
-	if all_recipes:
-		return render_template('dashboard.html',all_recipes=all_recipes)
-	else:
-		msg='No Recipes Found'
-		return render_template('dashboard.html',msg=msg)
+    if all_recipes:
+        return render_template('dashboard.html', all_recipes=all_recipes)
+    else:
+        msg = 'No Recipes Found'
+        return render_template('dashboard.html', msg=msg)
 
 #Recipe form class
 class RecipeForm(Form):
-    title = StringField(u'Title', validators=[validators.Length(min=1,max=200)])
-    ingredients = StringField(u'Ingrdients', validators=[validators.Length(min=1,max=200)])
+    """Recipe form for adding and editing recipes"""
+    title = StringField(u'Title', validators=[validators.Length(min=1, max=200)])
+    ingredients = StringField(u'Ingrdients', validators=[validators.Length(min=1, max=200)])
     steps = TextAreaField(u'Body', validators=[validators.Length(min=30)])
-    
+
 #add recipe
-@app.route('/add_recipe', methods=['POST','GET'])
-@is_logged_in 
+@app.route('/add_recipe', methods=['POST', 'GET'])
+@is_logged_in
 def add_recipe():
-	form = RecipeForm(request.form)
-	if request.method=='POST' and form.validate():
-		
-		flash('Cannot create Recipe at the moment','success')
+    """Function for adding a recipe"""
+    form = RecipeForm(request.form)
+    if request.method == 'POST' and form.validate():
+        flash('Cannot create Recipe at the moment', 'success')
 
-		return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard'))
 
-	return render_template('add_recipe.html',form=form)
+    return render_template('add_recipe.html', form=form)
 
 #Edit recipe
-@app.route('/edit_recipe/<string:id>', methods=['POST','GET'])
-@is_logged_in 
+@app.route('/edit_recipe/<string:id>', methods=['POST', 'GET'])
+@is_logged_in
 def edit_recipe(id):
-	#get form
-	form = RecipeForm(request.form)
+    """Ëdit function for the recipe"""
+    #get form
+    form = RecipeForm(request.form)
 
-	if request.method=='POST' and form.validate():
-		title=request.form['title']
-		body=request.form['body']
+    if request.method == 'POST' and form.validate():
+        title = request.form['title']
+        body = request.form['body']
+        flash('Cannot create recipe at the moment', 'success')
+        return redirect(url_for('dashboard'))
 
-		flash('Cannot create recipe at the moment','success')
-
-		return redirect(url_for('dashboard'))
-
-	return render_template('edit_recipe.html',form=form)
+    return render_template('edit_recipe.html', form=form)
 
 
 #Delete Recipe
 @app.route('/delete_recipe/<string:id>', methods=['POST'])
-@is_logged_in 
+@is_logged_in
 def delete_recipe(id):
-	
-	flash('Cannot delete recipe at the moment','success')
+    """Delete function for deleting recipes"""
+    flash('Cannot delete recipe at the moment', 'success')
+    return redirect(url_for('dashboard'))
 
-	return redirect(url_for('dashboard'))
-
-if __name__=='__main__':
+if __name__ == '__main__':
     app.config['SECRET_KEY'] = 'redsfsfsfsfis'
     app.run(debug=True)
     app.run()
