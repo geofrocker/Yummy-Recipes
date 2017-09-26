@@ -143,5 +143,8 @@ def delete_recipe(id):
 	return redirect(url_for('dashboard'))
 
 if __name__=='__main__':
-	app.secret_key='secret123'
-	app.run(debug=True)
+    app.secret_key='secret123jjjdfjfjjdfjjd'
+    app.config['SESSION_TYPE'] = 'filesystem'
+    sess.init_app(app)
+    app.run(debug=True)
+    app.run()
