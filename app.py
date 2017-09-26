@@ -40,8 +40,7 @@ def register():
         emails.append(email)
         passwords.append(password)
         #redirect to home page
-        error='Your are now registered and can log in'
-        return render_template('register.html')
+        redirect(url_for('recipes'))
     return render_template('register.html',form=form)
 
 #user login
@@ -56,8 +55,7 @@ def login():
             #passed
             session['logged_in']=True
             session['username']=username
-            error='Your are now logged in'
-            return render_template('dashboard.html')
+            return redirect(url_for('dashboard'))
 
         else:
             error='User not found'
@@ -143,5 +141,6 @@ def delete_recipe(id):
 
 if __name__=='__main__':
     app.config['SECRET_KEY'] = 'redsfsfsfsfis'
+    sess.init_app(app)
     app.run(debug=True)
     app.run()
