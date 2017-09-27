@@ -7,7 +7,7 @@ Yummy recipies is a web app built in python using flask framework
   * A user can login using his/her credentials
   * A user can add, edit and delete recipes
 # How run test
-  * A Make sure all the reqiurements are installed by running 'pip install -r requirements.txt'
+  * A Make sure all the reqiurements are installed by running `pip install -r requirements.txt`
   * make sure you are in the projects root directory
-  * Open your terminal and run 'py.test test_app.py'
+  * Open your terminal and run `py.test test_app.py`
   * You will be good to go.
