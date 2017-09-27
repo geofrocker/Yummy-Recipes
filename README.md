@@ -8,6 +8,17 @@ Yummy recipies is a web app built in python using flask framework
   * A user can register for membership
   * A user can login using his/her credentials
   * A user can add, edit and delete recipes
+# Installation guide
+  * This application has been tested with python 3.4[Python 3.4](https://www.python.org/) and [Flask 0.11](http://flask.pocoo.org/)
+  * Make sure the above requirements are satisfied
+  * Navigate to the project root directory and run `pip install -r requirements.txt` from command line. [Learn more a pip](https://pypi.python.org/pypi/pip) if you don't have it already installed
+  * Run `python app.py` from command line or terminal
+  * You should be able to see something similar to this
+  ![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+  * Visit your browser and enter `127.0.0.1/5000`
+  * :boom::boom: You will be good to go
+
+
 # How run test
   * Make sure all the requirements are installed by running `pip install -r requirements.txt`
   * Make sure you are in the projects root directory
