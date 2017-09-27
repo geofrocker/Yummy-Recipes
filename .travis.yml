@@ -1,9 +1,6 @@
 language: python
 python:
   - "3.4"
-env:
-  matrix:
-   - FLASK="Flask<0.11"
 branches:
     only:
         - master

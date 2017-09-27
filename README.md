@@ -1,5 +1,6 @@
 # Yummy-Recipes web app without database
 [![Build Status](https://travis-ci.org/geofrocker/Yummy-Recipes.svg?branch=master)](https://travis-ci.org/geofrocker/Yummy-Recipes)
+https://requires.io/github/celery/celery/requirements.svg?branch=master
 # Description
 Yummy recipies is a web app built in python using flask framework
   * A user can see the available recipes
