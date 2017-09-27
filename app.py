@@ -3,11 +3,15 @@ from flask import Flask, render_template, flash, redirect, url_for, session, req
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from functools import wraps
 from recipes import recipes
+import random
+from datetime import datetime
 app = Flask(__name__)
 usernames = []
 emails = []
 passwords = []
+my_recipe = []
 all_recipes = recipes()
+logged_in_user = []
 #All Recipes
 @app.route('/')
 def recipes():
@@ -60,6 +64,7 @@ def login():
             #passed
             session['logged_in'] = True
             session['username'] = username
+            logged_in_user.append(username)
             return redirect(url_for('dashboard'))
 
         else:
@@ -93,7 +98,7 @@ def dashboard():
     """implement the user dashboard"""
 	#get Recipes
     if all_recipes:
-        return render_template('dashboard.html', all_recipes=all_recipes)
+        return render_template('dashboard.html', all_recipes=my_recipe)
     else:
         msg = 'No Recipes Found'
         return render_template('dashboard.html', msg=msg)
@@ -102,8 +107,8 @@ def dashboard():
 class RecipeForm(Form):
     """Recipe form for adding and editing recipes"""
     title = StringField(u'Title', validators=[validators.Length(min=1, max=200)])
-    ingredients = StringField(u'Ingrdients', validators=[validators.Length(min=1, max=200)])
-    steps = TextAreaField(u'Body', validators=[validators.Length(min=30)])
+    ingredients = StringField(u'Ingredients', validators=[validators.Length(min=1, max=200)])
+    steps = TextAreaField(u'Steps', validators=[validators.Length(min=30)])
 
 #add recipe
 @app.route('/add_recipe', methods=['POST', 'GET'])
@@ -112,7 +117,22 @@ def add_recipe():
     """Function for adding a recipe"""
     form = RecipeForm(request.form)
     if request.method == 'POST' and form.validate():
-        flash('Cannot create Recipe at the moment', 'success')
+        title = form.title.data
+        ingredients = form.ingredients.data
+        steps = form.steps.data
+        if logged_in_user:
+            created_by = logged_in_user[0]
+        else:
+            created_by = 'Anonymous'
+        my_recipe.append({
+            'id':random.randrange(1, 20),
+            'title':title,
+            'ingredients':ingredients,
+            'steps':steps,
+            'created_by':created_by,
+            'create_date':datetime.now()
+        })
+        flash('Recipe created successfully', 'success')
 
         return redirect(url_for('dashboard'))
 
@@ -125,10 +145,9 @@ def edit_recipe(id):
     """Ëdit function for the recipe"""
     #get form
     form = RecipeForm(request.form)
+    #populate form fields
 
     if request.method == 'POST' and form.validate():
-        title = request.form['title']
-        body = request.form['body']
         flash('Cannot create recipe at the moment', 'success')
         return redirect(url_for('dashboard'))
 
@@ -140,6 +159,7 @@ def edit_recipe(id):
 @is_logged_in
 def delete_recipe(id):
     """Delete function for deleting recipes"""
+    my_recipe.fi
     flash('Cannot delete recipe at the moment', 'success')
     return redirect(url_for('dashboard'))
 
