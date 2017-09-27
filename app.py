@@ -159,7 +159,6 @@ def edit_recipe(id):
 @is_logged_in
 def delete_recipe(id):
     """Delete function for deleting recipes"""
-    my_recipe.fi
     flash('Cannot delete recipe at the moment', 'success')
     return redirect(url_for('dashboard'))
 
