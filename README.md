@@ -14,7 +14,7 @@ Yummy recipies is a web app built in python using flask framework
   * Navigate to the project root directory and run `pip install -r requirements.txt` from command line. [Learn more a pip](https://pypi.python.org/pypi/pip) if you don't have it already installed
   * Run `python app.py` from command line or terminal
   * You should be able to see something similar to this
-  ![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+  ![Image of Yaktocat](/github.com/geofrocker/Yummy-Recipes/raw/master/A%20screen%20shot%20of%20flask%20running%20in%20cmd.png)
   * Visit your browser and enter `127.0.0.1/5000`
   * :boom::boom: You will be good to go
 
