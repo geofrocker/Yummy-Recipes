@@ -167,8 +167,8 @@ def delete_recipe(id):
     flash('Cannot delete recipe at the moment', 'success')
     return redirect(url_for('dashboard'))
 
+app.secret_key = os.urandom(24)
 if __name__ == '__main__':
-    app.secret_key = os.urandom(24)
     app.run(debug=True)
     app.run()
 

@@ -1,1 +1,4 @@
-{}
+{
+  "test_app.py::test_delete_page_header": true,
+  "test_app.py::test_edit_page_header": true
+}

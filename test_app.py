@@ -20,4 +20,12 @@ def test_dashboard_page_header():
     client = app.test_client()
     rsp = client.get('/dashboard')
     assert rsp.status == '200 OK'
-    
+
+def test_edit_page_header():
+    client = app.test_client()
+    rsp = client.post('/edit_recipe/1')
+    assert rsp.status == '200 OK'
+def test_delete_page_header():
+    client = app.test_client()
+    rsp = client.post('/delete_recipe/1')
+    assert rsp.status == '200 OK'
