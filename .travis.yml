@@ -11,7 +11,7 @@ install:
   - pip install coverage
 # command to run tests
 script:
-    - pylint app.py
     - coverage run test_app.py test
+    - pylint app.py
 after_success:
     - coveralls

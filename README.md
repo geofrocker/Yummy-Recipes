@@ -1,6 +1,7 @@
 # Yummy-Recipes web app without database
 [![Build Status](https://travis-ci.org/geofrocker/Yummy-Recipes.svg?branch=master)](https://travis-ci.org/geofrocker/Yummy-Recipes)
 [![Coverage Status](https://coveralls.io/repos/github/geofrocker/Yummy-Recipes/badge.svg?branch=master)](https://coveralls.io/github/geofrocker/Yummy-Recipes?branch=master)
+![pylint Score](https://mperlet.github.io/pybadge/badges/7.29.svg)
 [![Requirements Status](https://requires.io/github/geofrocker/Yummy-Recipes/requirements.svg?branch=master)](https://requires.io/github/geofrocker/Yummy-Recipes/requirements/?branch=master)
 # Description
 Yummy recipies is a web app built in python using flask framework
