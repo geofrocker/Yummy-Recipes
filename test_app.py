@@ -42,7 +42,7 @@ def test_delete_recipe_page_header():
     client = app.test_client()
     rsp = client.post('/delete_recipe/1')
     assert rsp.status == '302 FOUND'
-    
+
 def test_logout_page_header():
     """Test logout_page"""
     client = app.test_client()
