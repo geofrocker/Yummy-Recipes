@@ -47,6 +47,8 @@ def register():
         usernames.append(username)
         emails.append(email)
         passwords.append(password)
+        #flash message
+        flash('Your are now registered and can log in', 'success')
         #redirect to home page
         redirect(url_for('recipes'))
     return render_template('register.html', form=form)
@@ -65,6 +67,7 @@ def login():
             session['logged_in'] = True
             session['username'] = username
             logged_in_user.append(username)
+            flash('Your are now logged in', 'success')
             return redirect(url_for('dashboard'))
 
         else:
@@ -161,6 +164,59 @@ def delete_recipe(id):
     """Delete function for deleting recipes"""
     my_recipe.fi
     flash('Cannot delete recipe at the moment', 'success')
+    return redirect(url_for('dashboard'))
+
+#Category form class
+class CategoryForm(Form):
+    """Category form for adding and editing Categories"""
+    name = StringField(u'Name', validators=[validators.Length(min=1, max=200)])
+
+#add recipe
+@app.route('/add_category', methods=['POST', 'GET'])
+@is_logged_in
+def add_category():
+    """Function for adding a category"""
+    form = CategoryForm(request.form)
+    if request.method == 'POST' and form.validate():
+        name = form.name.data
+        if logged_in_user:
+            created_by = logged_in_user[0]
+        else:
+            created_by = 'Anonymous'
+        my_recipe.append({
+            'id':random.randrange(1, 20),
+            'name':name,
+            'created_by':created_by,
+            'create_date':datetime.now()
+        })
+        flash('Category added successfully', 'success')
+
+        return redirect(url_for('dashboard'))
+
+    return render_template('add_category.html', form=form)
+
+#Edit Category
+@app.route('/edit_category/<string:id>', methods=['POST', 'GET'])
+@is_logged_in
+def edit_category(id):
+    """Edit function for the Category"""
+    #get form
+    form = CategoryForm(request.form)
+    #populate form fields
+    if request.method == 'POST' and form.validate():
+        flash('Cannot create Category at the moment', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('edit_category.html', form=form)
+
+
+#Delete Category
+@app.route('/delete_category/<string:id>', methods=['POST'])
+@is_logged_in
+def delete_category(id):
+    """Delete function for deleting Categories"""
+
+    flash('Cannot delete category at the moment', 'success')
     return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
