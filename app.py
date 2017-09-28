@@ -50,7 +50,7 @@ def register():
         emails.append(email)
         passwords.append(password)
         #flash message
-		flash('Your are now registered and can log in','success')
+        flash('Your are now registered and can log in', 'success')
         #redirect to home page
         redirect(url_for('recipes'))
     return render_template('register.html', form=form)
@@ -69,7 +69,7 @@ def login():
             session['logged_in'] = True
             session['username'] = username
             logged_in_user.append(username)
-            flash('Your are now logged in','success')
+            flash('Your are now logged in', 'success')
             return redirect(url_for('dashboard'))
 
         else:
