@@ -5,6 +5,8 @@ from functools import wraps
 from recipes import recipes
 import random
 from datetime import datetime
+import os
+
 app = Flask(__name__)
 usernames = []
 emails = []
@@ -163,6 +165,7 @@ def delete_recipe(id):
     return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
-    app.config['SECRET_KEY'] = 'redsfsfsfsfis'
+    app.config['SECRET_KEY'] = os.urandom(24)
     app.run(debug=True)
     app.run()
+    
