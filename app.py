@@ -99,8 +99,8 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-@app.route('/dashboard')
 @is_logged_in
+@app.route('/dashboard')
 def dashboard():
     """implement the user dashboard"""
 	#get Recipes
