@@ -6,7 +6,8 @@ from datetime import datetime
 from flask import Flask, render_template, flash, redirect, url_for, session, request
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from recipes import recipes
-
+from recipenew import Recipe
+new_recipe=Recipe('','','','','','')
 app = Flask(__name__)
 usernames = []
 emails = []
@@ -98,13 +99,13 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-@is_logged_in
 @app.route('/dashboard')
+@is_logged_in
 def dashboard():
     """implement the user dashboard"""
 	#get Recipes
-    if all_recipes:
-        return render_template('dashboard.html', all_recipes=my_recipe)
+    if new_recipe.get_recipe():
+        return render_template('dashboard.html', all_recipes=new_recipe.get_recipe())
     else:
         msg = 'No Recipes Found'
         return render_template('dashboard.html', msg=msg)
@@ -130,14 +131,8 @@ def add_recipe():
             created_by = logged_in_user[0]
         else:
             created_by = 'Anonymous'
-        my_recipe.append({
-            'id':random.randrange(1, 20),
-            'title':title,
-            'ingredients':ingredients,
-            'steps':steps,
-            'created_by':created_by,
-            'create_date':datetime.now()
-        })
+        new_recipe.set_recipe(random.randrange(1, 20),title,ingredients,steps,datetime.now(),created_by)
+        
         flash('Recipe created successfully', 'success')
 
         return redirect(url_for('dashboard'))
@@ -152,9 +147,17 @@ def edit_recipe(id):
     #get form
     form = RecipeForm(request.form)
     #populate form fields
+    if new_recipe.get_id() == id:
+        form.title.data=new_recipe.get_title()
+        form.ingredients.data=new_recipe.get_ingredients()
+        form.steps.data=new_recipe.get_steps()
 
     if request.method == 'POST' and form.validate():
-        flash('Cannot create recipe at the moment', 'success')
+        title=request.form['title']
+        ingredients=request.form['ingredients']
+        steps=request.form['steps']
+        new_recipe.edit_recipe(id,title,ingredients,steps)
+        flash('Recipe edited successfully', 'success')
         return redirect(url_for('dashboard'))
 
     return render_template('edit_recipe.html', form=form)
@@ -165,7 +168,9 @@ def edit_recipe(id):
 @is_logged_in
 def delete_recipe(id):
     """Delete function for deleting recipes"""
-    flash('Cannot delete recipe at the moment', 'success')
+    if new_recipe.get_id() == id:
+        new_recipe.set_recipe('','','','','','',)
+    flash('Recipe deleted Successfully', 'success')
     return redirect(url_for('dashboard'))
 
 app.secret_key = os.urandom(24)
