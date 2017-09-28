@@ -82,6 +82,7 @@ def is_logged_in(f):
     """implement decorator for checking if a user is logged in"""
     @wraps(f)
     def wrap(*args, **kwargs):
+        """check if user is logged"""
         if 'logged_in' in session:
             return f(*args, **kwargs)
         else:
@@ -171,4 +172,3 @@ app.secret_key = os.urandom(24)
 if __name__ == '__main__':
     app.run(debug=True)
     app.run()
-
