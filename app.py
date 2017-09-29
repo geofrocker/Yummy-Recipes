@@ -113,6 +113,7 @@ class RecipeForm(Form):
     steps = TextAreaField(u'Steps', validators=[validators.Length(min=30)])
 
 #add recipe
+@is_logged_in
 @app.route('/add_recipe', methods=['POST', 'GET'])
 @is_logged_in
 def add_recipe():
