@@ -6,15 +6,13 @@ from datetime import datetime
 from flask import Flask, render_template, flash, redirect, url_for, session, request
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from recipes import recipes
-from recipenew import Recipe
-new_recipe=Recipe('','','','','','')
+from recipenew import Recipe,User
+
 app = Flask(__name__)
-usernames = []
-emails = []
-passwords = []
-my_recipe = []
+
 all_recipes = recipes()
-logged_in_user = []
+new_recipe=Recipe('','','','','','')
+user=User('','','','')
 #All Recipes
 @app.route('/')
 def recipes():
@@ -47,9 +45,7 @@ def register():
         email = form.email.data
         username = form.username.data
         password = form.password.data
-        usernames.append(username)
-        emails.append(email)
-        passwords.append(password)
+        user.set_user(name,username,email,password)
         #flash message
         flash('Your are now registered and can log in', 'success')
         #redirect to home page
@@ -65,11 +61,10 @@ def login():
         username = request.form['username']
         password_candidate = request.form['password']
 
-        if username in usernames and password_candidate in passwords:
+        if user.get_username() and user.get_password():
             #passed
             session['logged_in'] = True
             session['username'] = username
-            logged_in_user.append(username)
             flash('Your are now logged in', 'success')
             return redirect(url_for('dashboard'))
 
@@ -127,8 +122,8 @@ def add_recipe():
         title = form.title.data
         ingredients = form.ingredients.data
         steps = form.steps.data
-        if logged_in_user:
-            created_by = logged_in_user[0]
+        if user.get_username():
+            created_by = user.get_username()
         else:
             created_by = 'Anonymous'
         new_recipe.set_recipe(random.randrange(1, 20),title,ingredients,steps,datetime.now(),created_by)

@@ -1,3 +1,4 @@
+"""Data handling file"""
 class Recipe:
     """Recipe class"""
     __id = ''
@@ -51,7 +52,33 @@ class Recipe:
     def get_ingredients(self):
         """Get recipe_ingredients"""
         return self.__ingredients
-
+        
     def get_steps(self):
         """Get recipe_steps"""
         return self.__steps
+
+class User:
+    """User class"""
+    __name = ''
+    __username = ''
+    __email = ''
+    __password = ''
+    def __init__(self, name, username, email, password):
+        """Initialise class"""
+        self.__name = name
+        self.__username = username
+        self.__email = email
+        self.__password = password
+    def set_user(self, name, username, email, password):
+        """Set user"""
+        self.__name = name
+        self.__username = username
+        self.__email = email
+        self.__password = password
+    
+    def get_username(self):
+        """get username"""
+        return self.__username
+    def get_password(self):
+        """get password"""
+        return self.__password
