@@ -115,7 +115,6 @@ class RecipeForm(Form):
 #add recipe
 @is_logged_in
 @app.route('/add_recipe', methods=['POST', 'GET'])
-@is_logged_in
 def add_recipe():
     """Function for adding a recipe"""
     form = RecipeForm(request.form)
