@@ -94,8 +94,8 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-@app.route('/dashboard')
 @is_logged_in
+@app.route('/dashboard')
 def dashboard():
     """implement the user dashboard"""
 	#get Recipes
@@ -113,8 +113,8 @@ class RecipeForm(Form):
     steps = TextAreaField(u'Steps', validators=[validators.Length(min=30)])
 
 #add recipe
-@app.route('/add_recipe', methods=['POST', 'GET'])
 @is_logged_in
+@app.route('/add_recipe', methods=['POST', 'GET'])
 def add_recipe():
     """Function for adding a recipe"""
     form = RecipeForm(request.form)
