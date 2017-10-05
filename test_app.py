@@ -29,7 +29,7 @@ def test_add_recipe_page_header():
     """Test edit_recipe_page"""
     client = app.test_client()
     rsp = client.post('/add_recipe')
-    assert rsp.status == '302 FOUND'
+    assert rsp.status == '200 OK'
 
 def test_edit_recipe_page_header():
     """Test edit_recipe_page"""

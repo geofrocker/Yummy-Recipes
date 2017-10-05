@@ -17,7 +17,7 @@ Yummy recipies is a web app built in python using flask framework
   * You should be able to see something similar to this
   ![A screen shot of flask running in cmd](/github.com/geofrocker/Yummy-Recipes/raw/master/A%20screen%20shot%20of%20flask%20running%20in%20cmd.png)
   * Visit your browser and enter `127.0.0.1/5000`
-  * :boom::boom: You will be good to go
+  * :boom::grinning: You will be good to go
 
 
 # How run test

@@ -82,3 +82,4 @@ class User:
     def get_password(self):
         """get password"""
         return self.__password
+    

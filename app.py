@@ -18,7 +18,7 @@ user=User('','','','')
 def recipes():
     """Display all recipes"""
     if all_recipes:
-        return render_template('recipes.html', all_recipes=all_recipes)
+        return render_template('recipes.html', all_recipes=all_recipes, new_recipes=new_recipe.get_recipe())
     else:
         msg = 'No Recipes Found'
         return render_template('recipes.html', msg=msg)
