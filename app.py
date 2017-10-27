@@ -127,8 +127,7 @@ def add_recipe():
             created_by = user.get_username()
         else:
             created_by = 'Anonymous'
-        new_recipe.set_recipe(random.randrange(1, 20),title,ingredients,steps,datetime.now(),created_by)
-        
+        new_recipe.set_recipe('1',title,ingredients,steps,datetime.now(),created_by)
         flash('Recipe created successfully', 'success')
 
         return redirect(url_for('dashboard'))
@@ -156,8 +155,8 @@ def edit_recipe(id):
             created_by = user.get_username()
         else:
             created_by = 'Anonymous'
-        new_recipe.set_recipe(random.randrange(1, 20),title,ingredients,steps,datetime.now(),created_by)
-        new_recipe.edit_recipe(id,title,ingredients,steps,datetime.now(),created_by)
+        new_recipe.set_recipe('1',title,ingredients,steps,datetime.now(),created_by)
+        new_recipe.edit_recipe('1',title,ingredients,steps,datetime.now(),created_by)
         flash('Recipe edited successfully', 'success')
         return redirect(url_for('dashboard'))
 
