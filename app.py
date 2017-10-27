@@ -152,7 +152,12 @@ def edit_recipe(id):
         title=request.form['title']
         ingredients=request.form['ingredients']
         steps=request.form['steps']
-        new_recipe.edit_recipe(id,title,ingredients,steps)
+        if user.get_username():
+            created_by = user.get_username()
+        else:
+            created_by = 'Anonymous'
+        new_recipe.set_recipe(random.randrange(1, 20),title,ingredients,steps,datetime.now(),created_by)
+        new_recipe.edit_recipe(id,title,ingredients,steps,datetime.now(),created_by)
         flash('Recipe edited successfully', 'success')
         return redirect(url_for('dashboard'))
 

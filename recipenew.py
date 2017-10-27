@@ -1,12 +1,6 @@
 """Data handling file"""
 class Recipe:
     """Recipe class"""
-    __id = ''
-    __title = ''
-    __ingredients = ''
-    __steps = ''
-    __create_date = ''
-    __created_by = ''
     def __init__(self, id, title, ingredients, steps, create_date, created_by):
         """Initialise class"""
         self.__id = id
@@ -23,12 +17,14 @@ class Recipe:
         self.__steps = steps
         self.__create_date = create_date
         self.__created_by = created_by
-    def edit_recipe(self, id, title, ingredients, steps):
+    def edit_recipe(self, id, title, ingredients, steps, create_date, created_by):
         """Edit the recipe variables"""
         self.__id = id
         self.__title = title
         self.__ingredients = ingredients
         self.__steps = steps
+        self.__create_date = create_date
+        self.__created_by = created_by
 
     def get_recipe(self):
         """Get recipe"""
