@@ -1,6 +1,12 @@
 """Data handling file"""
 class Recipe:
     """Recipe class"""
+    __id = ''
+    __title = ''
+    __ingredients = ''
+    __steps = ''
+    __create_date = ''
+    __created_by = ''
     def __init__(self, id, title, ingredients, steps, create_date, created_by):
         """Initialise class"""
         self.__id = id
