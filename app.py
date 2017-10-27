@@ -94,8 +94,9 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-@is_logged_in
+#dashboard
 @app.route('/dashboard')
+@is_logged_in
 def dashboard():
     """implement the user dashboard"""
 	#get Recipes
@@ -113,8 +114,8 @@ class RecipeForm(Form):
     steps = TextAreaField(u'Steps', validators=[validators.Length(min=30)])
 
 #add recipe
-@is_logged_in
 @app.route('/add_recipe', methods=['POST', 'GET'])
+@is_logged_in
 def add_recipe():
     """Function for adding a recipe"""
     form = RecipeForm(request.form)
@@ -168,7 +169,7 @@ def delete_recipe(id):
     flash('Recipe deleted Successfully', 'success')
     return redirect(url_for('dashboard'))
 
-app.secret_key = os.urandom(24)
+app.secret_key = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
 if __name__ == '__main__':
     app.run(debug=True)
     app.run()

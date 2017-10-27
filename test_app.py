@@ -5,6 +5,7 @@ def test_home_page_header():
     """Test home page"""
     client = app.test_client()
     rsp = client.get('/')
+    import pdb; pdb.set_trace()
     assert rsp.status == '200 OK'
 
 def test_login_page_header():
