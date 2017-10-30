@@ -61,7 +61,7 @@ def login():
         username = request.form['username']
         password_candidate = request.form['password']
 
-        if user.get_username() and user.get_password():
+        if user.get_username()==username and user.get_password()==password_candidate:
             #passed
             session['logged_in'] = True
             session['username'] = username
