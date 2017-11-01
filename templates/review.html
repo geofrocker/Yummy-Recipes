@@ -1,0 +1,47 @@
+{%extends 'layouts.html'%}
+
+{%block body%}
+<h1>Recipe</h1>
+
+<div class="jumbotron">
+    <h3>{{recipe.title}}</h3>
+    <em>Added by <span class="fa fa-user"></span> {{recipe.created_by}} on <span class="fa fa-calendar"></span>{{recipe.create_date}}</em>
+    
+    <hr>
+    <div>
+        <h3>Ingredients</h3>
+        {{recipe.ingredients}}
+        <h3>Steps</h3>
+        <small>{{recipe.steps | safe}}</small>
+        <form action="{{ url_for('up_vote',id=recipe.id) }}" method="POST">
+            <input type="hidden" name="_method" value="POST">
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary btn-xs">UpVote</button>
+                <button type="button" class="btn btn-default btn-xs">upvotes:{{votes}}</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="jumbotron">
+    {%if all_reviews%}
+        <b>Reviews</b>
+        {% for review in all_reviews %}
+            <blockquote>
+                <p>{{review.review}}.</p>
+                <footer>By {{review.created_by}} on<cite title="Time"> {{review.create_date}}</cite></footer>
+            </blockquote>
+        {%endfor%}
+    {%else%}
+        <b>No Reviews at the moment..Create one</b></br>
+    {%endif%}
+    {% from "includes/_formhelpers.html" import render_field %}
+    <form method="POST" action="">
+        <div class="form-group">
+            {{render_field(form.review, class_="form-control")}}
+        </div>
+        <p><input type="Submit" class="btn btn-primary" value="Submit"></p>
+    </form>
+</div>
+
+
+{%endblock%}

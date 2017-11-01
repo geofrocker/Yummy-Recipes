@@ -1,18 +1,26 @@
 {%extends 'layouts.html'%}
 
 {%block body%}
-<h1>Edit Recipe</h1>
-{% from "includes/_formhelpers.html" import render_field %}
-<form method="POST" action="">
-	<div class="form-group">
-		{{render_field(form.title, class_="form-control")}}
-	</div>
-	<div class="form-group">
-			{{render_field(form.ingredients, class_="form-control")}}
+<div class="jumbotron">
+	<h2>Edit Recipe</h2>
+	{% from "includes/_formhelpers.html" import render_field %}
+	<form method="POST" action="">
+		<div class="form-group">
+			{{render_field(form.title, class_="form-control")}}
 		</div>
-	<div class="form-group">
-		{{render_field(form.steps, class_="form-control",id="compose-textarea")}}
-	</div>
-	<p><input type="Submit" class="btn btn-primary" value="Submit"></p>
-</form>
+		<div class="form-group">
+			{{render_field(form.category, class_="form-control")}}
+		</div>
+		<div class="form-group">
+				{{render_field(form.ingredients, class_="form-control")}}
+			</div>
+		<div class="form-group">
+			{{render_field(form.steps, class_="form-control",id="compose-textarea", rows="4")}}
+		</div>
+		<div class="form-group">
+			{{render_field(form.status)}}
+		</div>
+		<p><input type="Submit" class="btn btn-primary" value="Submit"></p>
+	</form>
+</div>
 {%endblock%}

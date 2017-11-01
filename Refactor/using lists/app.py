@@ -6,17 +6,16 @@ from datetime import datetime
 from flask import Flask, render_template, flash, redirect, url_for, session, request
 from wtforms import Form, StringField, BooleanField, TextAreaField, SelectField, PasswordField, validators
 from recipes import recipes
-from data import Recipe, User, Category, Review, UpVote
+from data import Recipe, User, Category, Review
 
 
 app = Flask(__name__)
 
 all_recipes = recipes()
-new_recipe = Recipe()
-user = User()
-category = Category()
+new_recipe=Recipe()
+user=User()
+category=Category()
 review = Review()
-upVote = UpVote()
 #All Recipes
 @app.route('/')
 def recipes():
@@ -27,10 +26,32 @@ def recipes():
         msg = 'No Recipes Found'
         return render_template('recipes.html', msg=msg)
 
+#Review Recipe
+@app.route('/recipe/<string:id>', methods=['GET','POST'])
+def recipe(id):
+    """Display all recipes"""
+    recipe = new_recipe.get_recipe(id)
+    reviews = review.get_reviews()
+    form = ReviewForm(request.form)
+    if recipe:
+        if request.method == 'POST' and form.validate():
+            review_data = form.review.data
+            created_by = session['username']
+            create_date = datetime.now()
+            new_review=[str(uuid.uuid4()),review_data,created_by,create_date]
+            review.set_review(new_review)
+            #flash message
+            flash('Review created successfully', 'success')
+            #redirect to home page
+            return redirect(url_for('recipe', id=id))
+        return render_template('review.html', recipe=recipe, all_reviews=reviews, form=form)
+    else:
+        msg = 'Recipe not Found'
+        return render_template('review.html', msg=msg)
 #Review form class
 class ReviewForm(Form):
     """Review form"""
-    review = TextAreaField(u'Review', validators=[validators.Length(min=2)])
+    review = TextAreaField(u'Review', validators=[validators.Length(min=30)])
 
 #Register form class
 class RegisterForm(Form):
@@ -44,19 +65,55 @@ class RegisterForm(Form):
         ])
     confirm = PasswordField('Confirm Password')
 
-#Recipe form class
-class RecipeForm(Form):
-    """Recipe form for adding and editing recipes"""
-    title = StringField(u'Title', validators=[validators.Length(min=1, max=200)])
-    category = SelectField(u'Category', coerce=str)
-    ingredients = StringField(u'Ingredients', validators=[validators.Length(min=1, max=200)])
-    steps = TextAreaField(u'Steps', validators=[validators.Length(min=10)])
-    status = BooleanField(u'Private')
-
 #Category form class
 class CategoryForm(Form):
     """Category form"""
     name = StringField(u'Name', validators=[validators.Length(min=3, max=50)])
+
+#Add category
+@app.route('/add_category', methods=['GET', 'POST'])
+def add_category():
+    """Add category function"""
+    form = CategoryForm(request.form)
+    if request.method == 'POST' and form.validate():
+        name = form.name.data
+        created_by=session['username']
+        new_cat=[str(uuid.uuid4()),name,created_by]
+        category.set_category(new_cat)
+        #flash message
+        flash('Category created successfully', 'success')
+        #redirect to home page
+        return redirect(url_for('dashboard'))
+    return render_template('add_category.html', form=form)
+
+#Edit Category
+@app.route('/edit_category/<string:cat_id>', methods=['POST', 'GET'])
+def edit_category(cat_id):
+    """Ëdit function for the category"""
+    #get form
+    form = CategoryForm(request.form)
+    #populate form fields
+    if category.get_category(cat_id):
+        form.name.data=category.get_category(cat_id)
+
+    if request.method == 'POST' and form.validate():
+        new_name=request.form['name']
+        created_by=session['username']
+        new_cat=[id,new_name,created_by]
+        category.edit_category(cat_id,new_cat)
+        flash('Category edited successfully', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('edit_category.html', form=form)
+
+#Delete Category
+@app.route('/delete_category/<string:cat_id>', methods=['POST'])
+def delete_category(cat_id):
+    """Delete function for deleting category"""
+    if category.get_category(cat_id):
+        category.delete_category(cat_id)
+    flash('Recipe deleted Successfully', 'success')
+    return redirect(url_for('dashboard'))
 
 #user register
 @app.route('/register', methods=['GET', 'POST'])
@@ -68,13 +125,7 @@ def register():
         email = form.email.data
         username = form.username.data
         password = form.password.data
-        if user.check_user_name(username):
-            flash('Username already taken', 'danger')
-            return redirect(url_for('register'))
-        if user.check_user_email(email):
-            flash('Email already exists', 'danger')
-            return redirect(url_for('register'))
-        user_data = {'id':str(uuid.uuid4()),'name':name,'email':email,'username':username,'password':password}
+        user_data = [str(uuid.uuid4()), name, email, username, password]
         user.register_user(user_data)
         #flash message
         flash('Your are now registered and can log in', 'success')
@@ -124,59 +175,6 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-#Add category
-@app.route('/add_category', methods=['GET', 'POST'])
-@is_logged_in
-def add_category():
-    """Add category function"""
-    form = CategoryForm(request.form)
-    if request.method == 'POST' and form.validate():
-        name = form.name.data
-        created_by=session['username']
-        if category.get_category_name(created_by, name):
-            #flash message
-            flash('Category already exists', 'danger')
-            #redirect to home page
-            return redirect(url_for('add_category'))
-        cat_data = {'id':str(uuid.uuid4()), 'name':name, 'created_by':created_by}
-        category.set_category(cat_data)
-        #flash message
-        flash('Category created successfully', 'success')
-        #redirect to home page
-        return redirect(url_for('dashboard'))
-    return render_template('add_category.html', form=form)
-
-#Edit Category
-@app.route('/edit_category/<string:cat_id>', methods=['POST', 'GET'])
-@is_logged_in
-def edit_category(cat_id):
-    """Ëdit function for the category"""
-    #get form
-    form = CategoryForm(request.form)
-    #populate form fields
-    if category.get_category(cat_id):
-        form.name.data=category.get_category(cat_id)
-
-    if request.method == 'POST' and form.validate():
-        new_name=request.form['name']
-        created_by=session['username']
-        cat_data = {'id':cat_id, 'name':new_name, 'created_by':created_by}
-        category.edit_category(cat_id, cat_data)
-        flash('Category edited successfully', 'success')
-        return redirect(url_for('dashboard'))
-
-    return render_template('edit_category.html', form=form)
-
-#Delete Category
-@app.route('/delete_category/<string:cat_id>', methods=['POST'])
-@is_logged_in
-def delete_category(cat_id):
-    """Delete function for deleting category"""
-    if category.get_category(cat_id):
-        category.delete_category(cat_id)
-    flash('Recipe deleted Successfully', 'success')
-    return redirect(url_for('dashboard'))
-
 #dashboard
 @app.route('/dashboard')
 @is_logged_in
@@ -191,6 +189,15 @@ def dashboard():
         msg = 'No Recipes Found'
         return render_template('dashboard.html', msg=msg, all_categories=all_categories)
 
+#Recipe form class
+class RecipeForm(Form):
+    """Recipe form for adding and editing recipes"""
+    title = StringField(u'Title', validators=[validators.Length(min=1, max=200)])
+    category = SelectField(u'Category', coerce=str)
+    ingredients = StringField(u'Ingredients', validators=[validators.Length(min=1, max=200)])
+    steps = TextAreaField(u'Steps', validators=[validators.Length(min=30)])
+    status = BooleanField(u'Private')
+
 #add recipe
 @app.route('/add_recipe', methods=['POST', 'GET'])
 @is_logged_in
@@ -198,13 +205,12 @@ def add_recipe():
     """Function for adding a recipe"""
     form = RecipeForm(request.form)
     category = Category()
-    all_categories=category.get_user_categories(session['username'])
+    all_categories=category.get_categories()
     if all_categories:
-        form.category.choices = [(cat['name'], cat['name']) for cat in all_categories]
+        form.category.choices = [(cat[1], cat[1]) for cat in all_categories]
     else:
         form.category.choices = [('General', 'General')]
     if request.method == 'POST' and form.validate():
-        recipe_data = {}
         title = form.title.data
         category = form.category.data
         ingredients = form.ingredients.data
@@ -218,13 +224,8 @@ def add_recipe():
             created_by = session['username']
         else:
             created_by = 'Anonymous'
-        if new_recipe.get_recipe_titles(created_by, title):
-            #flash message
-            flash('Title already exists', 'danger')
-            #redirect to home page
-            return redirect(url_for('add_recipe'))
-        recipe_data = {'id':str(uuid.uuid4()),'title':title,'category':category,'ingredients':ingredients,'steps':steps,'create_date':datetime.now(),'created_by':created_by,'private':private}
-        new_recipe.set_recipe(recipe_data)
+        newrecip=[str(uuid.uuid4()),title,category,ingredients,steps,datetime.now(),created_by,private]
+        new_recipe.set_recipe(newrecip)
         flash('Recipe created successfully', 'success')
 
         return redirect(url_for('dashboard'))
@@ -238,22 +239,22 @@ def edit_recipe(id):
     """Ëdit function for the recipe"""
     #get form
     form = RecipeForm(request.form)
-    data=new_recipe.get_recipe(id)
-    category = Category()
-    all_categories=category.get_user_categories(session['username'])
+    category=Category()
+    all_categories=category.get_categories()
     if all_categories:
-        form.category.choices = [(cat['name'], cat['name']) for cat in all_categories]
-    form.category.choices = [(data['category'], data['category'])]
+        form.category.choices = [(cat, cat) for cat in all_categories]
+    form.category.choices = [('General', 'General')]
     #populate form fields
     if new_recipe.get_recipe(id):
-        form.title.data=data['title']
-        form.ingredients.data=data['ingredients']
-        form.steps.data=data['steps']
-        form.status.data=data['private']
+        data=new_recipe.get_recipe(id)
+        form.title.data=data[1]
+        form.ingredients.data=data[3]
+        form.steps.data=data[4]
+        form.status.data=data[7]
 
     if request.method == 'POST' and form.validate():
         title = request.form['title']
-        category = request.form['category']
+        cat = request.form['category']
         ingredients = request.form['ingredients']
         steps = request.form['steps']
         private = form.status.data
@@ -261,8 +262,8 @@ def edit_recipe(id):
             created_by = session['username']
         else:
             created_by = 'Anonymous'
-        recipe_data = {'id':id,'title':title,'category':category,'ingredients':ingredients,'steps':steps,'create_date':datetime.now(),'created_by':created_by,'private':private}
-        new_recipe.edit_recipe(id,recipe_data)
+        newrecip=[id,title,cat,ingredients,steps,datetime.now(),created_by,private]
+        new_recipe.edit_recipe(id,newrecip)
         flash('Recipe edited successfully', 'success')
         return redirect(url_for('dashboard'))
 
@@ -279,46 +280,6 @@ def delete_recipe(id):
     flash('Recipe deleted Successfully', 'success')
     return redirect(url_for('dashboard'))
 
-#Review Recipe
-@app.route('/recipe/<string:id>', methods=['GET','POST'])
-@is_logged_in
-def recipe(id):
-    """Display all recipes"""
-    recipe = new_recipe.get_recipe(id)
-    reviews = review.get_reviews()
-    votes = upVote.get_upVotes(id)
-    form = ReviewForm(request.form)
-    if recipe:
-        if request.method == 'POST' and form.validate():
-            review_data = {}
-            user_review = form.review.data
-            created_by = session['username']
-            create_date = datetime.now()
-            review_data = {'id':str(uuid.uuid4()),'review':user_review,'created_by':created_by,'create_date':create_date}
-            review.set_review(review_data)
-            #flash message
-            flash('Review created successfully', 'success')
-            #redirect to review page
-            return redirect(url_for('recipe', id=id))
-        return render_template('review.html', recipe=recipe, all_reviews=reviews, votes=votes, form=form)
-    else:
-        msg = 'Recipe not Found'
-        return render_template('review.html', msg=msg)
-
-#Up vote Recipe
-@app.route('/up_vote/<string:id>', methods=['POST'])
-@is_logged_in
-def up_vote(id):
-    """Up_vote function for upvoting recipes"""
-    upvote_data = {'id':str(uuid.uuid4()),'recipeId':id,'voted_by':session['username']}
-    if upVote.check_upvote(session['username'], id):
-        #flash message
-        flash('You already upvoted this recipe', 'success')
-        #redirect to review page
-        return redirect(url_for('recipe', id=id))
-    upVote.set_upvote(upvote_data)
-    flash('Recipe up_voted Successfully', 'success')
-    return redirect(url_for('recipe', id=id))
 
 app.secret_key = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
 if __name__ == '__main__':

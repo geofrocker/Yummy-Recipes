@@ -4,10 +4,11 @@
 <h1>Recipes</h1>
 
 {% for recipe in new_recipes%}
-{%if recipe.id !='' %}
 <div class="jumbotron">
     <h3>{{recipe.title}}</h3>
-    <em>Added by <span class="fa fa-user"></span> {{recipe.created_by}} on <span class="fa fa-calendar"></span>{{recipe.create_date}}</em>
+    <em>Added by <span class="fa fa-user"></span> {{recipe.created_by}} on <span class="fa fa-calendar"></span>{{recipe.create_date}}
+    <a href="/recipe/{{recipe.id}}" class="btn btn-success pull-right">Review</a>
+    </em>
     
     <hr>
     <div>
@@ -17,7 +18,6 @@
         <small>{{recipe.steps | safe}}</small>
     </div>
     </div>
-{%endif%}
 {%endfor%}
 
 {% for recipe in all_recipes%}
