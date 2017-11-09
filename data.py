@@ -9,6 +9,7 @@ class Recipe:
     def set_recipe(self, recipe):
         """Set the recipe variables"""
         self.__recipe.append(recipe)
+        return 'Recipe created successfully'
 
     def get_recipes(self):
         """Get public recipes"""
@@ -17,7 +18,7 @@ class Recipe:
             if not recipe['private']:
                 public_recipes.append(recipe)
         return public_recipes
-    def get_user_recipes(self,user):
+    def get_user_recipes(self, user):
         """Get recipes"""
         user_recipes = []
         for recipe in self.__recipe:
@@ -25,7 +26,7 @@ class Recipe:
                 user_recipes.append(recipe)
         return user_recipes
 
-    def get_recipe_titles(self,user,title):
+    def get_recipe_titles(self, user, title):
         """Get recipes titles for a user"""
         user_recipes = []
         for recipe in self.__recipe:
@@ -44,14 +45,18 @@ class Recipe:
             if recipe['id'] == recipeID:
                 index = self.__recipe.index(recipe)
                 self.__recipe.remove(self.__recipe[index])
-                return self.__recipe.insert(index, newrecipe)
+                self.__recipe.insert(index, newrecipe)
+                return 'Recipe edited successfully'
+            return 'Recipe does not exist'
 
     def delete_recipe(self, recipeID):
-        """Edit the recipe variables"""
+        """Delete the recipe """
         for recipe in self.__recipe:
             if recipe['id'] == recipeID:
                 index = self.__recipe.index(recipe)
-                return self.__recipe.remove(self.__recipe[index])
+                self.__recipe.remove(self.__recipe[index])
+                return 'Recipe deleted'
+            return 'Recipe does not exist'
    
 class User:
     """User class"""
@@ -63,6 +68,7 @@ class User:
     def register_user(self, user):
         """Set user"""
         self.__users.append(user)
+        return 'Your are now registered and can log in'
     
     def check_user_name(self, username):
         """check if username name exists"""
@@ -98,6 +104,7 @@ class Category:
     def set_category(self, name):
         """Set category"""
         self.__cat.append(name)
+        return 'Category created successfully'
 
     def get_category(self, cat_id):
         """get category name"""
@@ -111,14 +118,16 @@ class Category:
             if cat['id'] == cat_id:
                 index = self.__cat.index(cat)
                 self.__cat.remove(self.__cat[index])
-                return self.__cat.insert(index, new)
+                self.__cat.insert(index, new)
+                return 'Category edited successfully'
 
     def delete_category(self, cat_id):
         """delete category name"""
         for cat in self.__cat:
             if cat['id'] == cat_id:
                 index = self.__cat.index(cat)
-                return self.__cat.remove(self.__cat[index])
+                self.__cat.remove(self.__cat[index])
+                return 'Category deleted Successfully'
 
     def get_categories(self):
         """get category name"""
@@ -150,10 +159,23 @@ class Review:
     def set_review(self, review):
         """Set review"""
         self.__reviews.append(review)
+        return 'Review created successfully'
 
-    def get_reviews(self):
+    def get_reviews(self, recipe_id):
         """get reviews"""
-        return self.__reviews
+        rec_reviews = []
+        for review in self.__reviews:
+            if review['recipe_id'] == recipe_id:
+                rec_reviews.append(review)
+        return rec_reviews
+
+    def get_num_reviews(self, recipe_id):
+        """get reviews"""
+        num_reviews = 0
+        for review in self.__reviews:
+            if review['recipe_id'] == recipe_id:
+                num_reviews+=1
+        return num_reviews
 
 class UpVote:
     """vote class"""
@@ -165,12 +187,13 @@ class UpVote:
     def set_upvote(self, new_vote):
         """set upVote"""
         self.__up_votes.append(new_vote)
+        return 'Recipe upvoted Successfully'
 
     def check_upvote(self, user, recipe_id):
         """check if user has already voted"""
         my_vote = []
         for up_vote in self.__up_votes:
-            if up_vote['voted_by'] == user and up_vote['recipeId'] == recipe_id:
+            if up_vote['voted_by'] == user and up_vote['recipe_id'] == recipe_id:
                 my_vote.append(up_vote)
         return my_vote
 
@@ -178,7 +201,7 @@ class UpVote:
         """get upVotes"""
         votes = 0
         for up_vote in self.__up_votes:
-            if up_vote['recipeId'] == recipe_id:
+            if up_vote['recipe_id'] == recipe_id:
                 votes+=1
         return votes
 

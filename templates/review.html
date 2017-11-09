@@ -5,7 +5,7 @@
 
 <div class="jumbotron">
     <h3>{{recipe.title}}</h3>
-    <em>Added by <span class="fa fa-user"></span> {{recipe.created_by}} on <span class="fa fa-calendar"></span>{{recipe.create_date}}</em>
+    <em>Added by <span class="fa fa-user"></span> {{recipe.created_by}} on <span class="fa fa-calendar"></span>{{recipe.create_date.date()}}</em>
     
     <hr>
     <div>
@@ -28,7 +28,7 @@
         {% for review in all_reviews %}
             <blockquote>
                 <p>{{review.review}}.</p>
-                <footer>By {{review.created_by}} on<cite title="Time"> {{review.create_date}}</cite></footer>
+                <footer>By {{review.created_by}} on<cite title="Time"> {{review.create_date.date()}}</cite></footer>
             </blockquote>
         {%endfor%}
     {%else%}

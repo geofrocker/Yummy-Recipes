@@ -21,8 +21,14 @@ upVote = UpVote()
 @app.route('/')
 def recipes():
     """Display all recipes"""
+    new_recipes=new_recipe.get_recipes()
+    for recipe in new_recipes:
+        reviews = review.get_num_reviews(recipe['id'])
+        votes = upVote.get_upVotes(recipe['id'])
+        recipe['votes'] = votes
+        recipe['reviews'] = reviews
     if all_recipes:
-        return render_template('recipes.html', all_recipes=all_recipes, new_recipes=new_recipe.get_recipes())
+        return render_template('recipes.html', all_recipes=all_recipes, new_recipes=new_recipes)
     else:
         msg = 'No Recipes Found'
         return render_template('recipes.html', msg=msg)
@@ -75,9 +81,9 @@ def register():
             flash('Email already exists', 'danger')
             return redirect(url_for('register'))
         user_data = {'id':str(uuid.uuid4()),'name':name,'email':email,'username':username,'password':password}
-        user.register_user(user_data)
+        response = user.register_user(user_data)
         #flash message
-        flash('Your are now registered and can log in', 'success')
+        flash(response, 'success')
         #redirect to home page
         return redirect(url_for('recipes'))
     return render_template('register.html', form=form)
@@ -139,9 +145,9 @@ def add_category():
             #redirect to home page
             return redirect(url_for('add_category'))
         cat_data = {'id':str(uuid.uuid4()), 'name':name, 'created_by':created_by}
-        category.set_category(cat_data)
+        response = category.set_category(cat_data)
         #flash message
-        flash('Category created successfully', 'success')
+        flash(response, 'success')
         #redirect to home page
         return redirect(url_for('dashboard'))
     return render_template('add_category.html', form=form)
@@ -161,8 +167,8 @@ def edit_category(cat_id):
         new_name=request.form['name']
         created_by=session['username']
         cat_data = {'id':cat_id, 'name':new_name, 'created_by':created_by}
-        category.edit_category(cat_id, cat_data)
-        flash('Category edited successfully', 'success')
+        response = category.edit_category(cat_id, cat_data)
+        flash(response, 'success')
         return redirect(url_for('dashboard'))
 
     return render_template('edit_category.html', form=form)
@@ -172,9 +178,10 @@ def edit_category(cat_id):
 @is_logged_in
 def delete_category(cat_id):
     """Delete function for deleting category"""
+    response = ''
     if category.get_category(cat_id):
-        category.delete_category(cat_id)
-    flash('Recipe deleted Successfully', 'success')
+        response = category.delete_category(cat_id)
+    flash(response, 'success')
     return redirect(url_for('dashboard'))
 
 #dashboard
@@ -223,9 +230,10 @@ def add_recipe():
             flash('Title already exists', 'danger')
             #redirect to home page
             return redirect(url_for('add_recipe'))
-        recipe_data = {'id':str(uuid.uuid4()),'title':title,'category':category,'ingredients':ingredients,'steps':steps,'create_date':datetime.now(),'created_by':created_by,'private':private}
-        new_recipe.set_recipe(recipe_data)
-        flash('Recipe created successfully', 'success')
+            
+        recipe_data = {'id':str(uuid.uuid4()),'title':title,'category':category,'ingredients':ingredients,'steps':steps,'create_date':datetime.now(),'created_by':created_by,'private':private,'votes':0,'reviews':0}
+        response = new_recipe.set_recipe(recipe_data)
+        flash(response, 'success')
 
         return redirect(url_for('dashboard'))
 
@@ -249,7 +257,6 @@ def edit_recipe(id):
         form.title.data=data['title']
         form.ingredients.data=data['ingredients']
         form.steps.data=data['steps']
-        form.status.data=data['private']
 
     if request.method == 'POST' and form.validate():
         title = request.form['title']
@@ -262,8 +269,8 @@ def edit_recipe(id):
         else:
             created_by = 'Anonymous'
         recipe_data = {'id':id,'title':title,'category':category,'ingredients':ingredients,'steps':steps,'create_date':datetime.now(),'created_by':created_by,'private':private}
-        new_recipe.edit_recipe(id,recipe_data)
-        flash('Recipe edited successfully', 'success')
+        response = new_recipe.edit_recipe(id,recipe_data)
+        flash(response, 'success')
         return redirect(url_for('dashboard'))
 
     return render_template('edit_recipe.html', form=form)
@@ -274,9 +281,10 @@ def edit_recipe(id):
 @is_logged_in
 def delete_recipe(id):
     """Delete function for deleting recipes"""
+    response = ''
     if new_recipe.get_recipe(id):
-        new_recipe.delete_recipe(id)
-    flash('Recipe deleted Successfully', 'success')
+        response = new_recipe.delete_recipe(id)
+    flash(response, 'success')
     return redirect(url_for('dashboard'))
 
 #Review Recipe
@@ -285,7 +293,7 @@ def delete_recipe(id):
 def recipe(id):
     """Display all recipes"""
     recipe = new_recipe.get_recipe(id)
-    reviews = review.get_reviews()
+    reviews = review.get_reviews(id)
     votes = upVote.get_upVotes(id)
     form = ReviewForm(request.form)
     if recipe:
@@ -294,10 +302,10 @@ def recipe(id):
             user_review = form.review.data
             created_by = session['username']
             create_date = datetime.now()
-            review_data = {'id':str(uuid.uuid4()),'review':user_review,'created_by':created_by,'create_date':create_date}
-            review.set_review(review_data)
+            review_data = {'id':str(uuid.uuid4()), 'recipe_id':id, 'review':user_review, 'created_by':created_by, 'create_date':create_date}
+            response = review.set_review(review_data)
             #flash message
-            flash('Review created successfully', 'success')
+            flash(response, 'success')
             #redirect to review page
             return redirect(url_for('recipe', id=id))
         return render_template('review.html', recipe=recipe, all_reviews=reviews, votes=votes, form=form)
@@ -310,14 +318,14 @@ def recipe(id):
 @is_logged_in
 def up_vote(id):
     """Up_vote function for upvoting recipes"""
-    upvote_data = {'id':str(uuid.uuid4()),'recipeId':id,'voted_by':session['username']}
+    upvote_data = {'id':str(uuid.uuid4()),'recipe_id':id,'voted_by':session['username']}
     if upVote.check_upvote(session['username'], id):
         #flash message
         flash('You already upvoted this recipe', 'success')
         #redirect to review page
         return redirect(url_for('recipe', id=id))
-    upVote.set_upvote(upvote_data)
-    flash('Recipe up_voted Successfully', 'success')
+    response = upVote.set_upvote(upvote_data)
+    flash(response, 'success')
     return redirect(url_for('recipe', id=id))
 
 app.secret_key = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
